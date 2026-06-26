@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CHARACTER SELECT — DIGITAL CIRCUS RPG</title>
+<link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Creepster&family=Fredoka+One&family=Permanent+Marker&display=swap" rel="stylesheet">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     🔀 REDIRECIONAMENTO AUTOMÁTICO
+     Se estiver em desktop, redireciona para a versão desktop.
+     🔴 EDITE o nome do arquivo desktop se você o renomear.
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function() {
+  var DESKTOP_FILE = 'index.html';
+  var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+              || (window.innerWidth <= 768);
+  if (!isMobile) {
+    window.location.replace(DESKTOP_FILE);
+  }
+})();
+</script>
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   🎨 PALETA — edite aqui para mudar o esquema geral
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --bg-deep:      #050508;
+  --bg-card:      #0d0d18;
+  --neon-purple:  #b94eff;
+  --neon-green:   #39ff14;
+  --neon-pink:    #ff2d78;
+  --neon-cyan:    #00f5ff;
+  --neon-yellow:  #ffe600;
+  --text-main:    #f0e8ff;
+  --text-muted:   #9980aa;
+  --checker-light:#1a0a2e;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--bg-deep);
+  background-image:
+    linear-gradient(45deg, var(--checker-light) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--checker-light) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--checker-light) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--checker-light) 75%);
+  background-size: 28px 28px;
+  background-position: 0 0, 0 14px, 14px -14px, -14px 0px;
+  color: var(--text-main);
+  font-family: 'Fredoka One', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── ANIMAÇÕES ── */
+@keyframes glitch-1 {
+  0%,100%{ clip-path:inset(0 0 95% 0); transform:translate(-3px,0); }
+  20%    { clip-path:inset(30% 0 50% 0); transform:translate(3px,0); }
+  40%    { clip-path:inset(60% 0 10% 0); transform:translate(-2px,0); }
+}
+@keyframes glitch-2 {
+  0%,100%{ clip-path:inset(80% 0 0 0); transform:translate(3px,0); }
+  20%    { clip-path:inset(10% 0 70% 0); transform:translate(-3px,0); }
+  40%    { clip-path:inset(50% 0 30% 0); transform:translate(2px,0); }
+}
+@keyframes float {
+  0%,100%{ transform:translateY(0); }
+  50%    { transform:translateY(-6px); }
+}
+@keyframes spin-slow {
+  from{ transform:rotate(0deg); }
+  to  { transform:rotate(360deg); }
+}
+@keyframes pulse-glow {
+  0%,100%{ opacity:0.7; }
+  50%    { opacity:1; }
+}
+@keyframes scanline {
+  0%  { top:-5%; }
+  100%{ top:105%; }
+}
+@keyframes slideUp {
+  from{ transform:translateY(100%); opacity:0; }
+  to  { transform:translateY(0);    opacity:1; }
+}
+@keyframes flicker {
+  0%,100%{opacity:1;} 92%{opacity:1;} 93%{opacity:0.4;} 95%{opacity:1;} 97%{opacity:0.6;} 98%{opacity:1;}
+}
+@keyframes revealCards {
+  from{ opacity:0; transform:translateY(16px); }
+  to  { opacity:1; transform:translateY(0); }
+}
+
+/* ════════════════════════════════════════
+   HEADER
+   ════════════════════════════════════════ */
+header {
+  text-align: center;
+  padding: 44px 16px 28px;
+  position: relative;
+}
+.title-wrap {
+  position: relative;
+  display: inline-block;
+}
+/* 🔴 EDITE: título no HTML (mantenha data-text igual ao texto interno) */
+.main-title {
+  font-family: 'Creepster', cursive;
+  font-size: clamp(2.2rem, 11vw, 3.6rem);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--neon-purple);
+  text-shadow:
+    0 0 8px var(--neon-purple),
+    0 0 24px var(--neon-purple),
+    2px 2px 0 var(--neon-pink),
+    -2px -2px 0 var(--neon-cyan);
+  position: relative;
+  line-height: 1.05;
+  animation: float 4s ease-in-out infinite;
+}
+.main-title::before,
+.main-title::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  font-family: inherit; font-size: inherit;
+  letter-spacing: inherit; text-transform: inherit;
+}
+.main-title::before { color:var(--neon-pink);  animation:glitch-1 3.5s infinite steps(1); }
+.main-title::after  { color:var(--neon-cyan);  animation:glitch-2 3.5s infinite steps(1) 0.1s; }
+
+/* 🔴 EDITE: subtítulo */
+.subtitle {
+  font-family: 'Boogaloo', sans-serif;
+  font-size: clamp(0.7rem, 3.5vw, 1rem);
+  color: var(--neon-yellow);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-top: 10px;
+  text-shadow: 0 0 6px var(--neon-yellow);
+}
+.star {
+  position: absolute;
+  font-size: 1.4rem;
+  animation: spin-slow 6s linear infinite;
+  filter: drop-shadow(0 0 5px currentColor);
+}
+.star-1 { top:6px;  left:-28px;  color:var(--neon-yellow); }
+.star-2 { top:6px;  right:-28px; color:var(--neon-green);  animation-direction:reverse; }
+.star-3 { bottom:-6px; left:10px;  color:var(--neon-pink);  font-size:0.9rem; }
+.star-4 { bottom:-6px; right:10px; color:var(--neon-cyan);  font-size:0.9rem; animation-direction:reverse; }
+
+/* 🔴 EDITE: instrução */
+.instruction {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 18px;
+  letter-spacing: 0.08em;
+}
+.instruction span { color:var(--neon-green); animation:pulse-glow 2s ease-in-out infinite; }
+
+/* ════════════════════════════════════════
+   LISTA DE CARDS (coluna única no mobile)
+   ════════════════════════════════════════ */
+.cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 10px 14px 60px;
+}
+
+/* ════════════════════════════════════════
+   CARD — layout horizontal no mobile
+   ════════════════════════════════════════ */
+.char-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 2px solid var(--card-color, var(--neon-purple));
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  min-height: 120px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: float 5s ease-in-out infinite;
+}
+.char-card:active {
+  transform: scale(0.97);
+  box-shadow: 0 0 18px var(--card-color, var(--neon-purple));
+}
+
+/* Scanline no toque */
+.char-card::after {
+  content:'';
+  position:absolute; left:0; right:0;
+  height:3px;
+  background:linear-gradient(90deg,transparent,var(--card-color,var(--neon-purple)),transparent);
+  top:-5%; opacity:0; pointer-events:none;
+}
+.char-card:active::after { opacity:0.6; animation:scanline 1s linear; }
+
+/* Barra lateral colorida (substitui a top-bar no desktop) */
+.card-side-bar {
+  width: 5px;
+  flex-shrink: 0;
+  background: var(--card-color, var(--neon-purple));
+  box-shadow: 0 0 10px var(--card-color, var(--neon-purple));
+}
+
+/* Thumbnail da imagem */
+.card-thumb {
+  width: 100px;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0d0d18 0%, #1a0a2e 100%);
+  position: relative;
+}
+.card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  opacity: 0.85;
+}
+.card-thumb-placeholder {
+  font-size: 2.6rem;
+  filter: drop-shadow(0 0 8px var(--card-color, var(--neon-purple)));
+  opacity: 0.7;
+}
+
+/* Conteúdo de texto */
+.card-body {
+  flex: 1;
+  padding: 12px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+.card-number {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.6rem;
+  color: var(--card-color, var(--neon-purple));
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+.card-name {
+  font-family: 'Creepster', cursive;
+  font-size: 1.55rem;
+  color: #fff;
+  text-shadow: 1px 1px 0 var(--card-color, var(--neon-purple));
+  line-height: 1.05;
+  margin: 1px 0 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card-class {
+  font-size: 0.68rem;
+  color: var(--card-color, var(--neon-purple));
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-shadow: 0 0 5px currentColor;
+  margin-bottom: 6px;
+}
+.card-tagline {
+  font-family: 'Boogaloo', sans-serif;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  font-style: italic;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Seta indicadora de "toque para abrir" */
+.card-arrow {
+  display: flex;
+  align-items: center;
+  padding: 0 14px 0 6px;
+  color: var(--card-color, var(--neon-purple));
+  font-size: 1.1rem;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+/* Badge NPC */
+.secret-badge {
+  position: absolute;
+  top: 8px; right: 8px;
+  background: #ff0000;
+  color: #000;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  padding: 2px 8px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  z-index: 5;
+  box-shadow: 0 0 8px #ff0000;
+  animation: flicker 3s ease-in-out infinite;
+}
+
+/* delays de flutuação */
+.char-card:nth-child(1){ animation-delay:0s; }
+.char-card:nth-child(2){ animation-delay:1s; }
+.char-card:nth-child(3){ animation-delay:0.5s; }
+.char-card:nth-child(4){ animation-delay:1.5s; }
+
+/* ════════════════════════════════════════
+   DRAWER DE DETALHES (sobe pela base)
+   ════════════════════════════════════════ */
+.drawer-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(5,5,8,0.85);
+  z-index: 900;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+.drawer-backdrop.active { opacity: 1; pointer-events: all; }
+
+.drawer {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--bg-card);
+  border: 2px solid var(--active-color, var(--neon-purple));
+  border-bottom: none;
+  border-radius: 24px 24px 0 0;
+  z-index: 1000;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(.34,1.46,.64,1);
+  box-shadow: 0 -4px 40px var(--active-color, var(--neon-purple));
+}
+.drawer.active { transform: translateY(0); }
+
+/* puxador visual */
+.drawer-handle {
+  width: 40px; height: 4px;
+  background: var(--active-color, var(--neon-purple));
+  border-radius: 2px;
+  margin: 10px auto 0;
+  opacity: 0.5;
+}
+
+.drawer-close {
+  position: absolute;
+  top: 12px; right: 16px;
+  background: transparent; border: none;
+  color: var(--active-color, var(--neon-purple));
+  font-size: 1.6rem;
+  cursor: pointer;
+  font-family: 'Fredoka One', sans-serif;
+  line-height: 1;
+}
+
+/* imagem hero do drawer */
+.drawer-img-wrap {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+}
+.drawer-img-wrap img {
+  width:100%; height:100%;
+  object-fit:cover; object-position:center top;
+}
+.drawer-img-wrap::after {
+  content:'';
+  position:absolute; bottom:0; left:0; right:0;
+  height:55%;
+  background:linear-gradient(transparent,var(--bg-card));
+}
+.drawer-img-placeholder {
+  width:100%; height:100%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:5rem;
+  background:linear-gradient(135deg,#0d0d18,#1a0a2e);
+  color:var(--active-color,var(--neon-purple));
+  text-shadow:0 0 24px currentColor;
+  opacity:0.4;
+}
+
+.drawer-content { padding: 16px 20px 32px; }
+
+.drawer-number {
+  font-family:'Permanent Marker',cursive;
+  font-size:0.7rem; letter-spacing:0.25em;
+  text-transform:uppercase;
+  color:var(--active-color,var(--neon-purple));
+}
+.drawer-name {
+  font-family:'Creepster',cursive;
+  font-size:2.2rem; color:#fff;
+  text-shadow:2px 2px 0 var(--active-color,var(--neon-purple));
+  line-height:1.05; margin:3px 0 3px;
+}
+.drawer-class {
+  color:var(--active-color,var(--neon-purple));
+  font-size:0.8rem; letter-spacing:0.18em;
+  text-transform:uppercase; text-shadow:0 0 6px currentColor;
+  margin-bottom:12px;
+}
+.drawer-desc {
+  font-family:'Boogaloo',sans-serif;
+  font-size:0.95rem; color:var(--text-main);
+  line-height:1.55; margin-bottom:20px;
+  border-left:3px solid var(--active-color,var(--neon-purple));
+  padding-left:12px;
+}
+
+.section-label {
+  font-size:0.68rem; letter-spacing:0.28em;
+  text-transform:uppercase;
+  color:var(--active-color,var(--neon-purple));
+  margin-bottom:10px;
+  text-shadow:0 0 5px currentColor;
+}
+
+/* atributos — 5 colunas compactas */
+.attrs-grid {
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:6px; margin-bottom:20px;
+}
+.attr-box {
+  background:rgba(255,255,255,0.04);
+  border:1px solid var(--active-color,var(--neon-purple));
+  border-radius:10px;
+  padding:8px 4px;
+  text-align:center;
+}
+.attr-val {
+  font-family:'Creepster',cursive;
+  font-size:1.5rem;
+  color:var(--active-color,var(--neon-purple));
+  text-shadow:0 0 8px currentColor;
+  line-height:1;
+}
+.attr-name {
+  font-size:0.58rem; letter-spacing:0.08em;
+  color:var(--text-muted); text-transform:uppercase;
+  margin-top:2px;
+}
+
+/* habilidades */
+.skills-list { display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
+.skill-item {
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.07);
+  border-left:4px solid var(--active-color,var(--neon-purple));
+  border-radius:0 10px 10px 0;
+  padding:10px 12px;
+}
+.skill-name {
+  font-family:'Fredoka One',sans-serif;
+  font-size:0.92rem;
+  color:var(--active-color,var(--neon-purple));
+  text-shadow:0 0 5px currentColor;
+  margin-bottom:3px;
+}
+.skill-cost {
+  display:inline-block;
+  font-size:0.65rem;
+  background:var(--active-color,var(--neon-purple));
+  color:#000; padding:1px 7px;
+  border-radius:20px; margin-left:6px;
+  vertical-align:middle;
+  font-family:'Fredoka One',sans-serif;
+}
+.skill-desc {
+  font-family:'Boogaloo',sans-serif;
+  font-size:0.82rem; color:var(--text-muted); line-height:1.4;
+}
+
+/* botão ficha */
+.drawer-sheet-btn {
+  display:block; width:100%; padding:13px;
+  background:var(--active-color,var(--neon-purple));
+  border:none; border-radius:50px;
+  color:#000;
+  font-family:'Fredoka One',sans-serif;
+  font-size:1rem; letter-spacing:0.1em;
+  text-transform:uppercase; text-decoration:none;
+  text-align:center; cursor:pointer;
+  box-shadow:0 0 18px var(--active-color,var(--neon-purple));
+  transition:transform 0.2s, box-shadow 0.2s;
+}
+.drawer-sheet-btn:active { transform:scale(0.97); }
+
+/* botão ficha no card (aparece embaixo no mobile) */
+.card-sheet-btn {
+  display:none; /* oculto no layout de lista — só visível no drawer */
+}
+
+/* ════════════════════════════════════════
+   SEÇÃO SECRETA DO MESTRE
+   ════════════════════════════════════════ */
+.gm-section { padding: 0 14px 60px; }
+
+.gm-divider {
+  display:flex; align-items:center; gap:12px; margin-bottom:24px;
+}
+.gm-divider-line {
+  flex:1; height:1px;
+  background:linear-gradient(90deg,transparent,#ff0000 40%,#ff0000 60%,transparent);
+  opacity:0.4;
+}
+.gm-divider-label {
+  font-family:'Permanent Marker',cursive;
+  font-size:0.62rem; letter-spacing:0.2em;
+  text-transform:uppercase; color:#ff4444;
+  text-shadow:0 0 6px #ff0000;
+  animation:flicker 5s ease-in-out infinite;
+  white-space:nowrap;
+}
+
+.gm-lock-panel {
+  background:#0a0005;
+  border:2px solid #550000;
+  border-radius:18px;
+  padding:28px 20px;
+  text-align:center;
+  margin-bottom:24px;
+}
+.lock-icon { font-size:2.8rem; display:block; margin-bottom:8px; filter:drop-shadow(0 0 10px #ff0000); animation:flicker 4s ease-in-out infinite; }
+.gm-lock-title { font-family:'Creepster',cursive; font-size:1.5rem; color:#ff3333; text-shadow:0 0 12px #ff0000; margin-bottom:4px; }
+.gm-lock-sub { font-family:'Boogaloo',sans-serif; font-size:0.8rem; color:#663333; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:20px; }
+
+.gm-password-wrap { display:flex; gap:8px; }
+.gm-password-input {
+  flex:1; background:#0d0008;
+  border:2px solid #550000; border-radius:50px;
+  padding:10px 16px; color:#ff4444;
+  font-family:'Fredoka One',sans-serif; font-size:1rem;
+  letter-spacing:0.2em; outline:none;
+}
+.gm-password-input::placeholder { color:#440000; }
+.gm-unlock-btn {
+  background:#330000; border:2px solid #ff3333; border-radius:50px;
+  padding:10px 18px; color:#ff3333;
+  font-family:'Fredoka One',sans-serif; font-size:0.9rem;
+  cursor:pointer; white-space:nowrap;
+}
+.gm-error-msg { color:#ff4444; font-family:'Boogaloo',sans-serif; font-size:0.8rem; margin-top:10px; height:18px; letter-spacing:0.1em; text-shadow:0 0 5px #ff0000; }
+
+.gm-cards-list { display:none; flex-direction:column; gap:18px; }
+.gm-cards-list.unlocked { display:flex; animation:revealCards 0.5s ease forwards; }
+
+/* drawer do mestre */
+.drawer.gm-drawer { --active-color:#ff3333; border-color:#ff3333; box-shadow:0 -4px 40px #ff0000; }
+.drawer.gm-drawer::before {
+  content:'⚠ APENAS MESTRE ⚠';
+  display:block; background:#ff0000; color:#000;
+  font-family:'Permanent Marker',cursive; font-size:0.65rem;
+  letter-spacing:0.25em; padding:5px; text-align:center;
+  border-radius:22px 22px 0 0;
+}
+
+/* ════════════════════════════════════════
+   RODAPÉ
+   ════════════════════════════════════════ */
+footer {
+  text-align:center; padding:20px 16px 40px;
+  color:var(--text-muted);
+  font-family:'Boogaloo',sans-serif;
+  font-size:0.78rem; letter-spacing:0.08em;
+  border-top:1px solid rgba(255,255,255,0.05);
+}
+
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:#0d0d18; }
+::-webkit-scrollbar-thumb { background:var(--neon-purple); border-radius:2px; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════
+     HEADER
+     🔴 Edite data-text e texto interno do h1
+        (devem ser iguais para o glitch funcionar)
+     ════════════════════════════════════════════ -->
+<header>
+  <div class="title-wrap">
+    <span class="star star-1">★</span>
+    <span class="star star-2">★</span>
+    <span class="star star-3">✦</span>
+    <span class="star star-4">✦</span>
+    <!-- 🔴 EDITE: título (mantenha data-text igual ao texto interno) -->
+    <h1 class="main-title" data-text="O FANÁTICO CIRCO DIGITAL">O FANÁTICO CIRCO DIGITAL</h1>
+    <!-- 🔴 EDITE: subtítulo -->
+    <p class="subtitle">Escolha seu personagem</p>
+  </div>
+  <!-- 🔴 EDITE: instrução -->
+  <p class="instruction">Toque em um card para ver os <span>detalhes</span></p>
+</header>
+
+<!-- ════════════════════════════════════════════
+     CARDS DOS JOGADORES
+     Mesma estrutura de data-* do desktop.
+     Para trocar imagem: descomente <img> e apague o placeholder.
+     ════════════════════════════════════════════ -->
+<div class="cards-list">
+
+  <!-- ── PERSONAGEM 1 ── -->
+  <div class="char-card"
+    style="--card-color:#b94eff"
+    data-name="Pomni"
+    data-number="PERSONAGEM 01"
+    data-class="Trickster / Coringa"
+    data-tagline="Perdida no circus, mas perigosa quando encurralada."
+    data-desc="Pomni chegou ao Digital Circus sem memória do mundo exterior. Sua sanidade oscila entre o pânico e a genialidade. Em combate usa o ambiente a seu favor, criando ilusões e confundindo os inimigos com truques impossíveis."
+    data-sheet-url="https://LINK-DA-FICHA-POMNI.com"
+    data-attr-for="1" data-attr-agi="3" data-attr-int="2" data-attr-pre="2" data-attr-vig="1"
+    data-skill1-name="Truque de Ilusão"    data-skill1-cost="2 PD" data-skill1-desc="Cria uma imagem falsa de si mesma. Teste de Intelecto (DIF 12) para iludir um alvo por 1 rodada."
+    data-skill2-name="Pânico Controlado"   data-skill2-cost="1 PD" data-skill2-desc="Entra em estado de fuga frenética, ganhando +2 em todos os testes de Agilidade por 3 rodadas."
+    data-skill3-name="Glitch Mental"        data-skill3-cost="3 PD" data-skill3-desc="Força um inimigo a ver o ambiente glitchando: ele sofre -3 em testes até o fim da cena."
+  >
+    <div class="card-side-bar"></div>
+    <div class="card-thumb">
+      <!-- 🔴 TROQUE pelo desenho do personagem -->
+      <!-- <img src="imagens/pomni.png" alt="Pomni"> -->
+      <div class="card-thumb-placeholder">🃏</div>
+    </div>
+    <div class="card-body">
+      <div class="card-number">PERSONAGEM 01</div>
+      <div class="card-name">Pomni</div>
+      <div class="card-class">Trickster / Coringa</div>
+      <div class="card-tagline">Perdida no circus, mas perigosa quando encurralada.</div>
+    </div>
+    <div class="card-arrow">›</div>
+  </div>
+
+  <!-- ── PERSONAGEM 2 ── -->
+  <div class="char-card"
+    style="--card-color:#39ff14"
+    data-name="Jax"
+    data-number="PERSONAGEM 02"
+    data-class="Guerreiro / Caótico"
+    data-tagline="Ele acha tudo engraçado. Especialmente dor alheia."
+    data-desc="Jax é o personagem mais antigo do circus e abraçou o caos por completo. Extremamente ágil e cruel em combate, prefere desestabilizar emocionalmente os inimigos antes de golpeá-los."
+    data-sheet-url="https://LINK-DA-FICHA-JAX.com"
+    data-attr-for="3" data-attr-agi="3" data-attr-int="1" data-attr-pre="2" data-attr-vig="2"
+    data-skill1-name="Pancadaria Caótica"  data-skill1-cost="2 PD" data-skill1-desc="Dois ataques rápidos em sequência. Cada um com +3 no teste de ataque."
+    data-skill2-name="Provocação"           data-skill2-cost="0 PD" data-skill2-desc="Força um inimigo a focar nele por 1 rodada (falha automática em testes de Presença do alvo)."
+    data-skill3-name="Risada Maníaca"       data-skill3-cost="1 PD" data-skill3-desc="Restaura 1d6 PV ao causar dano. Ativa apenas uma vez por cena."
+  >
+    <div class="card-side-bar"></div>
+    <div class="card-thumb">
+      <!-- <img src="imagens/jax.png" alt="Jax"> -->
+      <div class="card-thumb-placeholder">🐇</div>
+    </div>
+    <div class="card-body">
+      <div class="card-number">PERSONAGEM 02</div>
+      <div class="card-name">Jax</div>
+      <div class="card-class">Guerreiro / Caótico</div>
+      <div class="card-tagline">Ele acha tudo engraçado. Especialmente dor alheia.</div>
+    </div>
+    <div class="card-arrow">›</div>
+  </div>
+
+  <!-- ── PERSONAGEM 3 ── -->
+  <div class="char-card"
+    style="--card-color:#ff2d78"
+    data-name="Gangle"
+    data-number="PERSONAGEM 03"
+    data-class="Suporte / Sombra"
+    data-tagline="Por trás da máscara vive outra máscara."
+    data-desc="Gangle carrega duas máscaras que refletem estados opostos. Quando a máscara de comédia domina, ela é resiliente e cura aliados. Quando a tragédia prevalece, libera energia negativa devastadora."
+    data-sheet-url="https://LINK-DA-FICHA-GANGLE.com"
+    data-attr-for="1" data-attr-agi="2" data-attr-int="3" data-attr-pre="3" data-attr-vig="2"
+    data-skill1-name="Máscara da Comédia"  data-skill1-cost="2 PD" data-skill1-desc="Cura 1d8 PV de um aliado adjacente e concede +2 no próximo teste dele."
+    data-skill2-name="Máscara da Tragédia" data-skill2-cost="3 PD" data-skill2-desc="Libera uma onda de energia sombria. Todo inimigo em alcance curto sofre 2d6 de dano psíquico."
+    data-skill3-name="Abraço de Fitas"      data-skill3-cost="1 PD" data-skill3-desc="Imobiliza um alvo com fitas mágicas por 1 rodada (Teste de Força DIF 14 para escapar)."
+  >
+    <div class="card-side-bar"></div>
+    <div class="card-thumb">
+      <!-- <img src="imagens/gangle.png" alt="Gangle"> -->
+      <div class="card-thumb-placeholder">🎭</div>
+    </div>
+    <div class="card-body">
+      <div class="card-number">PERSONAGEM 03</div>
+      <div class="card-name">Gangle</div>
+      <div class="card-class">Suporte / Sombra</div>
+      <div class="card-tagline">Por trás da máscara vive outra máscara.</div>
+    </div>
+    <div class="card-arrow">›</div>
+  </div>
+
+  <!-- ── PERSONAGEM 4 ── -->
+  <div class="char-card"
+    style="--card-color:#00f5ff"
+    data-name="Kinger"
+    data-number="PERSONAGEM 04"
+    data-class="Tanque / Louco"
+    data-tagline="Viveu tanto no circus que a loucura virou força."
+    data-desc="Kinger é o personagem mais antigo, além de Jax. Sua mente fragmentada o torna imprevisível. Em batalha é extremamente resistente e seus ataques carregam o peso de anos de trauma digital acumulado."
+    data-sheet-url="https://LINK-DA-FICHA-KINGER.com"
+    data-attr-for="3" data-attr-agi="1" data-attr-int="1" data-attr-pre="1" data-attr-vig="4"
+    data-skill1-name="Resistência Absurda"  data-skill1-cost="0 PD" data-skill1-desc="Passiva: reduz todo dano recebido em 2 (mínimo 1). Representa sua resiliência digital."
+    data-skill2-name="Surto Traumático"     data-skill2-cost="2 PD" data-skill2-desc="Ataque em área (cone). Todos no cone sofrem 3d6 de dano físico. Kinger também sofre 1d4."
+    data-skill3-name="Rei do Circus"         data-skill3-cost="4 PD" data-skill3-desc="Por 2 rodadas, todos os aliados ganham +2 em todos os testes e Kinger recebe -2 em todos os seus."
+  >
+    <div class="card-side-bar"></div>
+    <div class="card-thumb">
+      <!-- <img src="imagens/kinger.png" alt="Kinger"> -->
+      <div class="card-thumb-placeholder">♟️</div>
+    </div>
+    <div class="card-body">
+      <div class="card-number">PERSONAGEM 04</div>
+      <div class="card-name">Kinger</div>
+      <div class="card-class">Tanque / Louco</div>
+      <div class="card-tagline">Viveu tanto no circus que a loucura virou força.</div>
+    </div>
+    <div class="card-arrow">›</div>
+  </div>
+
+</div><!-- fim cards-list -->
+
+<!-- ════════════════════════════════════════════
+     SEÇÃO SECRETA DO MESTRE
+     🔴 Senha definida no JS abaixo (GM_PASSWORD)
+     ════════════════════════════════════════════ -->
+<section class="gm-section">
+  <div class="gm-divider">
+    <div class="gm-divider-line"></div>
+    <div class="gm-divider-label">☠ Acesso Restrito ☠</div>
+    <div class="gm-divider-line"></div>
+  </div>
+
+  <div class="gm-lock-panel" id="gm-lock-panel">
+    <span class="lock-icon">🔒</span>
+    <div class="gm-lock-title">ÁREA DO MESTRE</div>
+    <div class="gm-lock-sub">Insira a senha para continuar</div>
+    <div class="gm-password-wrap">
+      <input class="gm-password-input" type="password" id="gm-input" placeholder="••••••••" maxlength="30">
+      <button class="gm-unlock-btn" id="gm-btn">OK</button>
+    </div>
+    <div class="gm-error-msg" id="gm-error"></div>
+  </div>
+
+  <div class="gm-cards-list" id="gm-cards">
+
+    <!-- ── NPC SECRETO 1 ── -->
+    <div class="char-card secret-card"
+      style="--card-color:#ff3333"
+      data-name="O Ringmaster"
+      data-number="NPC — MESTRE"
+      data-class="Antagonista / Controlador"
+      data-tagline="Ele não é o vilão. Ele é o circus."
+      data-desc="O Ringmaster é a entidade que mantém o Digital Circus funcionando. Não tem corpo fixo — pode manifestar-se em qualquer elemento do cenário. Usa os personagens jogadores como peões sem que eles percebam."
+      data-sheet-url="https://LINK-DA-FICHA-RINGMASTER.com"
+      data-attr-for="5" data-attr-agi="4" data-attr-int="5" data-attr-pre="5" data-attr-vig="5"
+      data-skill1-name="Reescrever a Realidade" data-skill1-cost="∞ PD" data-skill1-desc="Altera uma regra do cenário à vontade do mestre. Não pode ser resistida."
+      data-skill2-name="Marionete"               data-skill2-cost="5 PD"  data-skill2-desc="Assume controle de um PJ por 1 rodada (o jogador perde o turno, o mestre age por ele)."
+      data-skill3-name="Código Corrompido"        data-skill3-cost="3 PD"  data-skill3-desc="Causa 4d10 de dano psíquico ignorando armaduras. O alvo também perde 1 ponto de Sanidade."
+    >
+      <div class="card-side-bar" style="background:#ff3333;box-shadow:0 0 8px #ff0000"></div>
+      <div class="secret-badge">☠ NPC</div>
+      <div class="card-thumb">
+        <!-- <img src="imagens/ringmaster.png" alt="O Ringmaster"> -->
+        <div class="card-thumb-placeholder" style="color:#ff3333">🎩</div>
+      </div>
+      <div class="card-body">
+        <div class="card-number" style="color:#ff3333">NPC — MESTRE</div>
+        <div class="card-name">O Ringmaster</div>
+        <div class="card-class" style="color:#ff3333">Antagonista / Controlador</div>
+        <div class="card-tagline">Ele não é o vilão. Ele é o circus.</div>
+      </div>
+      <div class="card-arrow" style="color:#ff3333">›</div>
+    </div>
+
+    <!-- ── NPC SECRETO 2 ── -->
+    <div class="char-card secret-card"
+      style="--card-color:#ff8800"
+      data-name="A Abstração"
+      data-number="NPC — MESTRE"
+      data-class="Criatura / Ameaça"
+      data-tagline="Quando um personagem perde sua sanidade… isso é o que sobra."
+      data-desc="A Abstração não é um ser pensante — é o resultado de uma mente que colapsou completamente no Digital Circus. Funciona como uma força da natureza: pura destruição sem lógica."
+      data-sheet-url="https://LINK-DA-FICHA-ABSTRACAO.com"
+      data-attr-for="6" data-attr-agi="2" data-attr-int="0" data-attr-pre="0" data-attr-vig="6"
+      data-skill1-name="Forma Instável"  data-skill1-cost="Passiva" data-skill1-desc="Imune a dano psíquico. Todo dano físico recebido é reduzido à metade. Não pode ser persuadida."
+      data-skill2-name="Grito do Vazio"  data-skill2-cost="0 PD"    data-skill2-desc="Todos os PJs em alcance médio fazem teste de Presença (DIF 16) ou perdem 1d4 de Sanidade."
+      data-skill3-name="Devorar"          data-skill3-cost="2 PD"    data-skill3-desc="Ataque que causa 5d8 de dano. Se matar o alvo, a Abstração recupera 2d10 PV."
+    >
+      <div class="card-side-bar" style="background:#ff8800;box-shadow:0 0 8px #ff8800"></div>
+      <div class="secret-badge" style="background:#ff8800">☠ NPC</div>
+      <div class="card-thumb">
+        <!-- <img src="imagens/abstracao.png" alt="A Abstração"> -->
+        <div class="card-thumb-placeholder" style="color:#ff8800">👁️</div>
+      </div>
+      <div class="card-body">
+        <div class="card-number" style="color:#ff8800">NPC — MESTRE</div>
+        <div class="card-name">A Abstração</div>
+        <div class="card-class" style="color:#ff8800">Criatura / Ameaça</div>
+        <div class="card-tagline">Quando um personagem perde sua sanidade… isso é o que sobra.</div>
+      </div>
+      <div class="card-arrow" style="color:#ff8800">›</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 🔴 EDITE: rodapé -->
+<footer>✦ O Fanático Circo Digital — Mesa de Jogo ✦ · Criado com ❤ e loucura</footer>
+
+<!-- ════════════════════════════════════════════
+     DRAWER DOS JOGADORES
+     ════════════════════════════════════════════ -->
+<div class="drawer-backdrop" id="backdrop"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-handle"></div>
+  <button class="drawer-close" id="drawer-close">✕</button>
+  <div class="drawer-img-wrap" id="dr-img"></div>
+  <div class="drawer-content">
+    <div class="drawer-number" id="dr-number"></div>
+    <div class="drawer-name"   id="dr-name"></div>
+    <div class="drawer-class"  id="dr-class"></div>
+    <div class="drawer-desc"   id="dr-desc"></div>
+    <div class="section-label">⚡ Atributos</div>
+    <div class="attrs-grid"    id="dr-attrs"></div>
+    <div class="section-label">🎪 Habilidades de Destaque</div>
+    <div class="skills-list"   id="dr-skills"></div>
+    <a class="drawer-sheet-btn" id="dr-sheet-btn" href="#" target="_blank">▶ Abrir Ficha Completa</a>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     DRAWER DO MESTRE
+     ════════════════════════════════════════════ -->
+<div class="drawer-backdrop" id="gm-backdrop"></div>
+<div class="drawer gm-drawer" id="gm-drawer">
+  <div class="drawer-handle" style="background:#ff3333"></div>
+  <button class="drawer-close" id="gm-drawer-close" style="color:#ff3333">✕</button>
+  <div class="drawer-img-wrap" id="gm-dr-img"></div>
+  <div class="drawer-content">
+    <div class="drawer-number" id="gm-dr-number" style="color:#ff3333"></div>
+    <div class="drawer-name"   id="gm-dr-name"></div>
+    <div class="drawer-class"  id="gm-dr-class" style="color:#ff3333"></div>
+    <div class="drawer-desc"   id="gm-dr-desc"></div>
+    <div class="section-label" style="color:#ff3333">⚡ Atributos</div>
+    <div class="attrs-grid"    id="gm-dr-attrs"></div>
+    <div class="section-label" style="color:#ff3333">☠ Habilidades</div>
+    <div class="skills-list"   id="gm-dr-skills"></div>
+    <a class="drawer-sheet-btn" id="gm-dr-sheet-btn" href="#" target="_blank" style="background:#ff3333;box-shadow:0 0 16px #ff0000">▶ Abrir Ficha do Mestre</a>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   🔴 SENHA DO MESTRE — altere aqui
+   ═══════════════════════════════════════════════════════════════ */
+const GM_PASSWORD = 'mestre123';
+
+/* ── SENHA ── */
+const gmInput = document.getElementById('gm-input');
+const gmBtn   = document.getElementById('gm-btn');
+const gmError = document.getElementById('gm-error');
+const gmCards = document.getElementById('gm-cards');
+const gmLock  = document.getElementById('gm-lock-panel');
+
+function tryUnlock() {
+  if (gmInput.value === GM_PASSWORD) {
+    gmLock.style.display = 'none';
+    gmCards.classList.add('unlocked');
+  } else {
+    gmError.textContent = '⚠ Senha incorreta.';
+    gmInput.value = '';
+    gmInput.focus();
+    setTimeout(() => { gmError.textContent = ''; }, 2500);
+  }
+}
+gmBtn.addEventListener('click', tryUnlock);
+gmInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); });
+
+/* ── DRAWER DOS JOGADORES ── */
+const backdrop   = document.getElementById('backdrop');
+const drawer     = document.getElementById('drawer');
+const drawerClose= document.getElementById('drawer-close');
+const ATTRS      = ['FOR','AGI','INT','PRE','VIG'];
+
+function fillDrawer(card, drawerId, backdropId, gmMode) {
+  const c   = card.dataset;
+  const color = gmMode ? (getComputedStyle(card).getPropertyValue('--card-color').trim() || '#ff3333') : getComputedStyle(card).getPropertyValue('--card-color').trim();
+  const pfx = gmMode ? 'gm-dr' : 'dr';
+  const drEl = document.getElementById(drawerId);
+  const bdEl = document.getElementById(backdropId);
+
+  if (!gmMode) drEl.style.setProperty('--active-color', color);
+
+  // imagem
+  const imgEl  = card.querySelector('.card-thumb img');
+  const imgWrap= document.getElementById(pfx + '-img') || document.getElementById(pfx + 'img');
+  const imgWrapReal = document.getElementById(gmMode ? 'gm-dr-img' : 'dr-img');
+  if (imgEl) {
+    imgWrapReal.innerHTML = `<img src="${imgEl.src}" alt="${c.name}">`;
+  } else {
+    const emoji = card.querySelector('.card-thumb-placeholder').textContent;
+    imgWrapReal.innerHTML = `<div class="drawer-img-placeholder">${emoji}</div>`;
+  }
+
+  document.getElementById(pfx+'-number').textContent = c.number;
+  document.getElementById(pfx+'-name').textContent   = c.name;
+  document.getElementById(pfx+'-class').textContent  = c.class;
+  document.getElementById(pfx+'-desc').textContent   = c.desc;
+
+  const vals = [c.attrFor, c.attrAgi, c.attrInt, c.attrPre, c.attrVig];
+  document.getElementById(pfx+'-attrs').innerHTML = ATTRS.map((l,i) => `
+    <div class="attr-box">
+      <div class="attr-val" ${gmMode ? 'style="color:#ff3333;text-shadow:0 0 8px #ff0000"' : ''}>${vals[i]||'—'}</div>
+      <div class="attr-name">${l}</div>
+    </div>`).join('');
+
+  document.getElementById(pfx+'-skills').innerHTML = [1,2,3].map(n => `
+    <div class="skill-item" ${gmMode ? 'style="border-left-color:#ff3333"' : ''}>
+      <div class="skill-name" ${gmMode ? 'style="color:#ff3333"' : ''}>
+        ${c[`skill${n}Name`]||'—'}
+        ${c[`skill${n}Cost`] ? `<span class="skill-cost" ${gmMode?'style="background:#ff3333"':''}>${c[`skill${n}Cost`]}</span>` : ''}
+      </div>
+      <div class="skill-desc">${c[`skill${n}Desc`]||''}</div>
+    </div>`).join('');
+
+  const btn = document.getElementById(pfx+'-sheet-btn');
+  btn.href = c.sheetUrl || '#';
+  btn.style.display = (!c.sheetUrl || c.sheetUrl === '#') ? 'none' : 'block';
+
+  drEl.classList.add('active');
+  bdEl.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDrawer() {
+  drawer.classList.remove('active');
+  backdrop.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.char-card:not(.secret-card)').forEach(card => {
+  card.addEventListener('click', () => fillDrawer(card, 'drawer', 'backdrop', false));
+});
+
+drawerClose.addEventListener('click', closeDrawer);
+backdrop.addEventListener('click', closeDrawer);
+
+/* ── DRAWER DO MESTRE ── */
+const gmBackdrop   = document.getElementById('gm-backdrop');
+const gmDrawer     = document.getElementById('gm-drawer');
+const gmDrawerClose= document.getElementById('gm-drawer-close');
+
+function closeGmDrawer() {
+  gmDrawer.classList.remove('active');
+  gmBackdrop.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.secret-card').forEach(card => {
+  card.addEventListener('click', () => fillDrawer(card, 'gm-drawer', 'gm-backdrop', true));
+});
+gmDrawerClose.addEventListener('click', closeGmDrawer);
+gmBackdrop.addEventListener('click', closeGmDrawer);
+
+/* swipe down para fechar drawer */
+let touchStartY = 0;
+[drawer, gmDrawer].forEach(dr => {
+  dr.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; }, { passive:true });
+  dr.addEventListener('touchend', e => {
+    const delta = e.changedTouches[0].clientY - touchStartY;
+    if (delta > 80) { closeDrawer(); closeGmDrawer(); }
+  }, { passive:true });
+});
+</script>
+</body>
+</html>
